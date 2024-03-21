@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class APIController {
-    @Value("${short.url.domain}")
+    @Value("${redirection.domain}")
     private String domain;
 
     private final URLService urlService;
