@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-
 @Data
 @Entity
 @Builder
@@ -21,9 +19,6 @@ public class RefreshToken {
 
     @Column
     private String token;
-
-    @Column
-    private Instant expiryDate;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

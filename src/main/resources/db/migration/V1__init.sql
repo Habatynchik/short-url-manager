@@ -39,7 +39,6 @@ CREATE TABLE refresh_tokens
 (
     id          bigserial primary key,
     token       varchar(255),
-    expiry_date timestamptz,
     user_id     bigint,
 
     foreign key (user_id) references users (id)

@@ -10,6 +10,8 @@ public interface JwtService {
 
     String extractUsername(String token);
 
+    Boolean isTokenExpired(String token);
+
     Date extractExpiration(String token);
 
     <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
@@ -18,5 +20,5 @@ public interface JwtService {
 
     String generateToken(String username);
 
-
+    String generateRefreshToken(String username);
 }

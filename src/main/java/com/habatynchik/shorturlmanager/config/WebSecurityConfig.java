@@ -9,7 +9,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,8 +30,7 @@ public class WebSecurityConfig {
 
     private static final String[] OPEN_ENDPOINTS = {
             "/api/auth/register",
-            "/api/auth/login",
-            "/api/auth/refresh"
+            "/api/auth/login"
     };
 
     private static final String[] SWAGGER_ENDPOINTS = {

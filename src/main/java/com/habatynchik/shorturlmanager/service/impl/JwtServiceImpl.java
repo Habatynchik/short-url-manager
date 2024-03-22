@@ -21,8 +21,9 @@ public class JwtServiceImpl implements JwtService {
     @Value("${spring.application.security.jwt.secret-key}")
     public String secret;
     @Value("${spring.application.security.jwt.expiration}")
-    public Long expiration;
-
+    public Long tokenExpiration;
+    @Value("${spring.application.security.jwt.refresh-token.expiration}")
+    private Long refreshTokenExpiration;
     @Override
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -48,7 +49,7 @@ public class JwtServiceImpl implements JwtService {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -61,12 +62,17 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+        return createToken(claims, username, new Date(System.currentTimeMillis() + tokenExpiration));
     }
 
-    private String createToken(Map<String, Object> claims, String username) {
+    @Override
+    public String generateRefreshToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, username, new Date(System.currentTimeMillis() + refreshTokenExpiration));
+    }
+
+    private String createToken(Map<String, Object> claims, String username, Date expireTime) {
         Date currentTime = new Date(System.currentTimeMillis());
-        Date expireTime = new Date(System.currentTimeMillis() + expiration);
 
         return Jwts.builder()
                 .setClaims(claims)

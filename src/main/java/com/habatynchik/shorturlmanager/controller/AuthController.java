@@ -9,16 +9,14 @@ import com.habatynchik.shorturlmanager.service.JwtService;
 import com.habatynchik.shorturlmanager.service.RefreshTokenService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,15 +50,18 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public JwtDto refreshToken(@RequestBody JwtDto jwtDto) {
-        return refreshTokenService.findByToken(jwtDto.getRefreshToken())
-                .map(refreshTokenService::verifyExpiration)
+    public JwtDto refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        return refreshTokenService.findByToken(token.substring(7))
+                .filter(refreshTokenService::isNotExpire)
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String accessToken = jwtService.generateToken(user.getEmail());
+                    String refreshToken = refreshTokenService
+                            .refreshRefreshToken(token.substring(7))
+                            .getToken();
                     return JwtDto.builder()
                             .accessToken(accessToken)
-                            .refreshToken(jwtDto.getRefreshToken())
+                            .refreshToken(refreshToken)
                             .build();
                 }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
     }
