@@ -1,7 +1,5 @@
 package com.habatynchik.shorturlmanager.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.habatynchik.shorturlmanager.dto.Views;
 import com.habatynchik.shorturlmanager.model.enums.RolesEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,11 +15,10 @@ import lombok.ToString;
 @Table(name = "roles")
 public class Role {
     @Id
-    @JsonView(Views.Details.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     @Enumerated(EnumType.STRING)
-    @JsonView(Views.Summary.class)
     private RolesEnum name;
 }

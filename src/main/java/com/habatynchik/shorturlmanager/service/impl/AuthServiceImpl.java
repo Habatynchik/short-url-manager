@@ -5,6 +5,7 @@ import com.habatynchik.shorturlmanager.dto.RegistrationDto;
 import com.habatynchik.shorturlmanager.dto.UserDto;
 import com.habatynchik.shorturlmanager.exception.EmailAlreadyExistException;
 import com.habatynchik.shorturlmanager.exception.PasswordsNotMatchException;
+import com.habatynchik.shorturlmanager.mapper.RoleMapper;
 import com.habatynchik.shorturlmanager.model.entity.RefreshToken;
 import com.habatynchik.shorturlmanager.model.entity.Role;
 import com.habatynchik.shorturlmanager.model.entity.User;
@@ -25,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    private final RoleMapper roleMapper;
     private final JwtService jwtService;
     private final UserService userService;
     private final RolesRepository rolesRepository;
@@ -49,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
                 .password(encoder.encode(registrationDTO.getPassword()))
                 .displayName(UUID.randomUUID().toString().substring(0, 8))
                 .registrationDate(LocalDate.now())
-                .role(role)
+                .role(roleMapper.toDto(role))
                 .build();
 
         User user = userService.saveUser(userDto);

@@ -1,7 +1,6 @@
 package com.habatynchik.shorturlmanager.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.habatynchik.shorturlmanager.model.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,10 +12,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
     @JsonView(Views.Details.class)
     private Long id;
@@ -39,5 +38,5 @@ public class UserDto {
 
     @NotNull
     @JsonView(Views.Summary.class)
-    private Role role;
+    private RoleDto role;
 }

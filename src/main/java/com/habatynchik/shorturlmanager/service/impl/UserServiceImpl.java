@@ -2,6 +2,7 @@ package com.habatynchik.shorturlmanager.service.impl;
 
 import com.habatynchik.shorturlmanager.dto.UserDto;
 import com.habatynchik.shorturlmanager.exception.UserNotFoundException;
+import com.habatynchik.shorturlmanager.mapper.UserMapper;
 import com.habatynchik.shorturlmanager.model.entity.User;
 import com.habatynchik.shorturlmanager.repository.UserRepository;
 import com.habatynchik.shorturlmanager.service.UserService;
@@ -13,6 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final UserMapper userMapper;
     private final UserRepository userRepository;
 
     @Override
@@ -22,13 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(UserDto userDto) {
-        User user = User.builder()
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .displayName(userDto.getDisplayName())
-                .registrationDate(userDto.getRegistrationDate())
-                .roles(userDto.getRole())
-                .build();
+        User user = userMapper.toEntity(userDto);
         return userRepository.save(user);
     }
 
@@ -36,18 +32,13 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
-
-        return UserDto.builder()
-                .email(user.getEmail())
-                .role(user.getRoles())
-                .displayName(user.getDisplayName())
-                .build();
+        return userMapper.toDto(user);
     }
 
     @Override
     public List<UserDto> getAllUser() {
-        return null;
+        return userRepository.findAll().stream()
+                .map(userMapper::toDto)
+                .toList();
     }
-
-
 }
